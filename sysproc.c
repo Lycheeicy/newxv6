@@ -8,6 +8,16 @@
 #include "proc.h"
 
 int
+sys_info(void)
+{
+    int choice;
+    
+    if (argint(0, &choice) < 0)
+        return -1;
+    return info(choice);
+}
+
+int
 sys_fork(void)
 {
   return fork();

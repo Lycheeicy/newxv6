@@ -88,7 +88,8 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-
+  p->syscallcounter = 0;
+  p->pagenum = 0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -531,4 +532,28 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+int
+info(int choice) {
+    if (choice == 1) {
+        acquire(&ptable.lock);
+        int count = 0;
+        struct proc* p;
+        for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+            if (p->state == UNUSED)
+                continue;
+            else
+                count += 1;
+        release(&ptable.lock);
+        return count;
+    }
+    else if (choice == 2) {
+        return myproc()->syscallcounter;
+    }
+    else if (choice == 3) {
+        return myproc()->pagenum;
+    }
+    else
+        return -1;
 }
